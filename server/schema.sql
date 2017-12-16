@@ -4,12 +4,12 @@ USE chat;
 
 CREATE TABLE Users (
   UserID int primary key auto_increment,
-  name text
+  username text
 );
 
 CREATE TABLE Rooms (
   RoomID int primary key auto_increment,
-  name text
+  roomname text
 );
 
 CREATE TABLE Messages (
