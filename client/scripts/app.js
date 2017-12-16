@@ -43,6 +43,8 @@ var app = {
       url: app.server,
       type: 'POST',
       data: message,
+      contentType: 'application/json',
+      dataType: 'json',
       success: function (data) {
         // Clear messages input
         app.$message.val('');
@@ -64,6 +66,7 @@ var app = {
       contentType: 'application/json',
       success: function(data) {
         // Don't bother if we have nothing to work with
+        console.log('DATA REQ', data);
         if (!data.results || !data.results.length) { return; }
 
         // Store messages for caching later
@@ -162,7 +165,7 @@ var app = {
     }
 
     var $message = $('<br><span/>');
-    $message.text(message.text).appendTo($chat);
+    $message.text(message.Txt).appendTo($chat);
 
     // Add the message to the UI
     app.$chats.append($chat);
@@ -218,7 +221,7 @@ var app = {
       roomname: app.roomname || 'lobby'
     };
 
-    app.send(message);
+    app.send(JSON.stringify(message));
 
     // Stop the form from submitting
     event.preventDefault();

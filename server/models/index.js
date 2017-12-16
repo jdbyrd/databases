@@ -7,10 +7,12 @@ module.exports = {
       let sql = 'SELECT * FROM messages m INNER JOIN Users u ON m.UserID = u.UserID INNER JOIN Rooms r ON m.RoomID = r.RoomId';
       db.query(sql, [], function(err, results) {
         if (err) { throw err; }
-        res.json(results);
+        res.json({results});
       });
     },
-    post: function (req, res) {
+    post: function (req) {
+      console.log('body: ', req);
+      
       var sql = `SELECT RoomID FROM rooms WHERE roomname = ('${req.roomname}')`;
       db.query(sql, [], function(err, results) {
         if (err) { throw err; }
@@ -41,9 +43,8 @@ module.exports = {
           let sql = `SELECT UserID FROM users WHERE username = ("${req.username}")`;
           db.query(sql, [], function(err, results) {
             if (err) { throw err; }
-            //console.log('Results: ', results[0].UserID);
-            //let userID = results[0].UserID;
-            let userID = 1;
+            console.log('Results: ', results[0].UserID);
+            let userID = results[0].UserID;
             sql = `INSERT INTO messages (Txt, UserID, RoomID) VALUES ("${req.message}", ${userID}, ${roomID})`;
             db.query(sql, [], function(err, results) {
               if (err) { throw err; }
