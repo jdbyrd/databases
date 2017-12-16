@@ -7,20 +7,50 @@ module.exports = {
       let sql = 'SELECT * FROM messages m INNER JOIN Users u ON m.UserID = u.UserID INNER JOIN Rooms r ON m.RoomID = r.RoomId';
       db.query(sql, [], function(err, results) {
         if (err) { throw err; }
-        res.send(JSON.stringify(results));
+        res.json(results);
       });
     },
     post: function (req, res) {
-      let sql = `SELECT UserID FROM users WHERE username = ("${req.username}")`;
+      var sql = `SELECT RoomID FROM rooms WHERE roomname = ('${req.roomname}')`;
       db.query(sql, [], function(err, results) {
         if (err) { throw err; }
-        console.log('Results: ', results[0].UserID);
-        let userID = results[0].UserID;
-        sql = `INSERT INTO messages (Txt, UserID, RoomID) VALUES ("${req.message}", ${userID}, 1)`;
-        db.query(sql, [], function(err, results) {
-          if (err) { throw err; }
-          console.log('1 message inserted');
-        });
+        if (results.length === 0) {
+          sql = `INSERT INTO rooms (roomname) VALUE ("${req.roomname}")`;
+          db.query(sql, [], function(err, results) {
+            if (err) { throw err; }
+            console.log('roomname added');
+            var sql = `SELECT RoomID FROM rooms WHERE roomname = ('${req.roomname}')`;
+            db.query(sql, [], function(err, results) {
+              if (err) { throw err; }
+              let roomID = results[0].RoomID;
+              let sql = `SELECT UserID FROM users WHERE username = ("${req.username}")`;
+              db.query(sql, [], function(err, results) {
+                if (err) { throw err; }
+                console.log('Results: ', results[0].UserID);
+                let userID = results[0].UserID;
+                sql = `INSERT INTO messages (Txt, UserID, RoomID) VALUES ("${req.message}", ${userID}, ${roomID})`;
+                db.query(sql, [], function(err, results) {
+                  if (err) { throw err; }
+                  console.log('1 message inserted');
+                });
+              });
+            });  
+          });
+        } else {
+          let roomID = results[0].RoomID;
+          let sql = `SELECT UserID FROM users WHERE username = ("${req.username}")`;
+          db.query(sql, [], function(err, results) {
+            if (err) { throw err; }
+            //console.log('Results: ', results[0].UserID);
+            //let userID = results[0].UserID;
+            let userID = 1;
+            sql = `INSERT INTO messages (Txt, UserID, RoomID) VALUES ("${req.message}", ${userID}, ${roomID})`;
+            db.query(sql, [], function(err, results) {
+              if (err) { throw err; }
+              console.log('1 message inserted');
+            });
+          }); 
+        }
       });
     } 
   },

@@ -21,6 +21,8 @@ CREATE TABLE Messages (
   FOREIGN KEY (roomID) REFERENCES Rooms(RoomID)
 );
 
+INSERT INTO rooms (roomname) VALUE ("Main");
+
 
 
 /*  Execute this file from the command line by typing:
